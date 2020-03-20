@@ -14,8 +14,13 @@ function getSelectionText() {
     walk(document.body, new RegExp(text));
   } else {
     highlightedElements.forEach(element => {
-      console.log("Element node: ", element.parentNode.removeChild(element));
+      let parent = element.parentNode;
+      while (element.firstChild) {
+        parent.insertBefore(element.firstChild, element);
+      }
+      parent.removeChild(element);
     });
+    highlightedElements = [];
   }
   console.log("Elements: ", highlightedElements);
 }
