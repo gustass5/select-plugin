@@ -9,8 +9,8 @@ function getSelectionText() {
   } else if (document.selection && document.selection.type != "Control") {
     text = document.selection.createRange().text;
   }
-
-  if (text !== "") {
+  if (text) {
+    // console.log({ text });
     walk(document.body, new RegExp(text));
   } else {
     highlightedElements.forEach((element) => {
@@ -38,31 +38,32 @@ function walk(node, targetRe) {
 
 function handleText(node, targetRe) {
   var match, targetNode, followingNode, wrapper;
-
   // Does the text contain our target string?
   match = targetRe.exec(node.nodeValue);
   if (match) {
     console.log("===========");
+    console.log({ match });
     // Split at the beginning of the match
     targetNode = node.splitText(match.index);
-    console.log("targetNode: ", targetNode);
+    console.log("targetNode: ", targetNode.parentNode);
+    // console.log(targetNode);
     // Split at the end of the match.
     // match[0] is the full text that was matched.
     followingNode = targetNode.splitText(match[0].length);
-    console.log("followingNode: ", followingNode);
-    // Wrap the target in an `span` element with an `arabic` class.
-    // First we create the wrapper and insert it in front
-    // of the target text. We use the first capture group
-    // as the `href`.
-    wrapper = document.createElement("span");
-    console.log("wrapper: ", wrapper);
-    wrapper.style.backgroundColor = "#ade6e6";
-    targetNode.parentNode.insertBefore(wrapper, targetNode);
-    console.log("TargetNode after insertion: ", targetNode);
-    // Now we move the target text inside it
-    wrapper.appendChild(targetNode);
-    console.log("wrapper append child: ", wrapper);
-    highlightedElements.push(wrapper);
+    if (!targetNode.parentNode.classList.contains("$test")) {
+      // console.log("followingNode: ", followingNode);
+      // Wrap the target in an `span` element with an `arabic` class.
+      // First we create the wrapper and insert it in front
+      // of the target text. We use the first capture group
+      // as the `href`.
+      wrapper = document.createElement("span");
+      wrapper.style.backgroundColor = "#ade6e6";
+      wrapper.classList.add("$test");
+      targetNode.parentNode.insertBefore(wrapper, targetNode);
+      // Now we move the target text inside it
+      wrapper.appendChild(targetNode);
+      highlightedElements.push(wrapper);
+    }
 
     // Clean up any empty nodes (in case the target text
     // was at the beginning or end of a text node)
