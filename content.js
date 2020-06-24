@@ -1,7 +1,27 @@
-document.addEventListener("selectionchange", () => {
-  getSelectionText();
-});
+let enabled = true;
 var highlightedElements = [];
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.name === "disableClick") {
+    enabled = request.value;
+    if (!enabled) {
+      clearSelection();
+      highlightedElements.forEach((element) => {
+        element.outerHTML = element.innerHTML;
+      });
+      highlightedElements = [];
+    }
+  }
+  if (request.name === "requestStatus") {
+    sendResponse({ name: "sendStatus", value: enabled });
+  }
+});
+
+document.addEventListener("selectionchange", () => {
+  if (enabled) {
+    getSelectionText();
+  }
+});
 function getSelectionText() {
   var text = "";
   if (window.getSelection) {
@@ -76,5 +96,12 @@ function handleText(node, targetRe) {
 
     // Continue with the next match in the node, if any
     match = followingNode ? targetRe.exec(followingNode.nodeValue) : null;
+  }
+}
+function clearSelection() {
+  if (window.getSelection) {
+    window.getSelection().removeAllRanges();
+  } else if (document.selection) {
+    document.selection.empty();
   }
 }
