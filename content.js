@@ -1,19 +1,30 @@
 let enabled = true;
 var highlightedElements = [];
+let styles = {
+  color: "#ade6e6",
+  borderSize: "0px",
+  borderColor: "black",
+  borderStyle: "solid",
+};
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.name === "disableClick") {
-    enabled = request.value;
-    if (!enabled) {
-      clearSelection();
-      highlightedElements.forEach((element) => {
-        element.outerHTML = element.innerHTML;
-      });
-      highlightedElements = [];
-    }
-  }
-  if (request.name === "requestStatus") {
-    sendResponse({ name: "sendStatus", value: enabled });
+  switch (request.name) {
+    case "togglePlugin":
+      enabled = request.value;
+      if (!enabled) {
+        clearSelection();
+        highlightedElements.forEach((element) => {
+          element.outerHTML = element.innerHTML;
+        });
+        highlightedElements = [];
+      }
+      break;
+    case "requestStatus":
+      sendResponse({ name: "sendStatus", enabled, color: styles.color });
+      break;
+    case "toggleColor":
+      styles = { ...styles, color: request.value ? "#ade6e6" : "red" };
+      break;
   }
 });
 
@@ -77,7 +88,7 @@ function handleText(node, targetRe) {
       // of the target text. We use the first capture group
       // as the `href`.
       wrapper = document.createElement("span");
-      wrapper.style.backgroundColor = "#ade6e6";
+      applyStyles(wrapper);
       wrapper.classList.add("$test");
       targetNode.parentNode.insertBefore(wrapper, targetNode);
       // Now we move the target text inside it
@@ -104,4 +115,11 @@ function clearSelection() {
   } else if (document.selection) {
     document.selection.empty();
   }
+}
+
+function applyStyles(element) {
+  element.style.backgroundColor = styles.color;
+  element.style.border = styles.borderSize;
+  element.style.borderColor = styles.borderColor;
+  element.style.borderStyle = styles.borderStyle;
 }

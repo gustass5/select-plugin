@@ -1,22 +1,30 @@
-let disableButton;
-let enabled;
+let disableButton,
+  toggleColor,
+  toggleBorder,
+  colorPicker,
+  borderColorPicker,
+  borderStyle;
+
+let enabled, colorEnabled;
 
 document.addEventListener(
   "DOMContentLoaded",
   () => {
     disableButton = document.getElementById("disablePlugin");
-
-    if (!disableButton) {
-      console.error("No disable button found");
-      return;
-    }
+    toggleColor = document.getElementById("toggleColor");
+    toggleBorder = document.getElementById("toggleBorder");
+    colorPicker = document.getElementById("changeColor");
+    borderColorPicker = document.getElementById("changeBorderColor");
+    borderStyle = document.getElementById("changeBorderType");
 
     chrome.tabs.query({ currentWindow: true, active: true }, (tabs) =>
       chrome.tabs.sendMessage(
         tabs[0].id,
         { name: "requestStatus" },
         (response) => {
-          enabled = response.value;
+          enabled = response.enabled;
+          colorEnabled = response.color !== "";
+          toggleColor.value = colorEnabled ? "1" : "0";
           disableButton.innerHTML = enabled ? "Disable" : "Enable";
         }
       )
@@ -27,8 +35,20 @@ document.addEventListener(
       disableButton.innerHTML = enabled ? "Disable" : "Enable";
       chrome.tabs.query({ currentWindow: true, active: true }, (tabs) =>
         chrome.tabs.sendMessage(tabs[0].id, {
-          name: "disableClick",
+          name: "togglePlugin",
           value: enabled,
+        })
+      );
+    });
+
+    toggleColor.addEventListener("click", (event) => {
+      event.target.value = event.target.value === "1" ? "0" : "1";
+      colorEnabled = event.target.value === "1";
+
+      chrome.tabs.query({ currentWindow: true, active: true }, (tabs) =>
+        chrome.tabs.sendMessage(tabs[0].id, {
+          name: "toggleColor",
+          value: colorEnabled,
         })
       );
     });
