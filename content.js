@@ -1,6 +1,7 @@
 let enabled = true;
 var highlightedElements = [];
 let styles = {
+  currentColor: "#ade6e6",
   color: "#ade6e6",
   borderSize: "0px",
   borderColor: "",
@@ -23,18 +24,27 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       sendResponse({
         name: "sendStatus",
         enabled,
-        color: styles.color,
-        borderColor: styles.borderColor,
+        styles,
       });
       break;
     case "toggleColor":
-      styles = { ...styles, color: request.value ? "#ade6e6" : "" };
+      styles = {
+        ...styles,
+        currentColor: request.value ? styles.color : "",
+      };
       break;
     case "toggleBorder":
       styles = {
         ...styles,
         borderColor: request.value ? "black" : "",
         borderSize: request.value ? "2px" : "0px",
+      };
+      break;
+    case "colorPicker":
+      styles = {
+        ...styles,
+        currentColor: request.value,
+        color: request.value,
       };
       console.log({ styles });
       break;
@@ -131,7 +141,7 @@ function clearSelection() {
 }
 
 function applyStyles(element) {
-  element.style.backgroundColor = styles.color;
+  element.style.backgroundColor = styles.currentColor;
   element.style.border = styles.borderSize;
   element.style.borderColor = styles.borderColor;
   element.style.borderStyle = styles.borderStyle;

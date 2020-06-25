@@ -23,11 +23,11 @@ document.addEventListener(
         { name: "requestStatus" },
         (response) => {
           enabled = response.enabled;
-          colorEnabled = response.color !== "";
-          borderEnabled = response.borderColor !== "";
-          console.log(response);
+          colorEnabled = response.styles.currentColor !== "";
+          borderEnabled = response.styles.borderColor !== "";
           toggleColor.value = colorEnabled ? "1" : "0";
           toggleBorder.value = borderEnabled ? "1" : "0";
+          colorPicker.value = response.styles.color;
           disableButton.innerHTML = enabled ? "Disable" : "Enable";
         }
       )
@@ -64,6 +64,15 @@ document.addEventListener(
         chrome.tabs.sendMessage(tabs[0].id, {
           name: "toggleBorder",
           value: borderEnabled,
+        })
+      );
+    });
+
+    colorPicker.addEventListener("change", (event) => {
+      chrome.tabs.query({ currentWindow: true, active: true }, (tabs) =>
+        chrome.tabs.sendMessage(tabs[0].id, {
+          name: "colorPicker",
+          value: event.target.value,
         })
       );
     });
