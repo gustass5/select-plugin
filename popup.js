@@ -5,7 +5,7 @@ let disableButton,
   borderColorPicker,
   borderStyle;
 
-let enabled, colorEnabled;
+let enabled, colorEnabled, borderEnabled;
 
 document.addEventListener(
   "DOMContentLoaded",
@@ -24,7 +24,10 @@ document.addEventListener(
         (response) => {
           enabled = response.enabled;
           colorEnabled = response.color !== "";
+          borderEnabled = response.borderColor !== "";
+          console.log(response);
           toggleColor.value = colorEnabled ? "1" : "0";
+          toggleBorder.value = borderEnabled ? "1" : "0";
           disableButton.innerHTML = enabled ? "Disable" : "Enable";
         }
       )
@@ -49,6 +52,18 @@ document.addEventListener(
         chrome.tabs.sendMessage(tabs[0].id, {
           name: "toggleColor",
           value: colorEnabled,
+        })
+      );
+    });
+
+    toggleBorder.addEventListener("click", (event) => {
+      event.target.value = event.target.value === "1" ? "0" : "1";
+      borderEnabled = event.target.value === "1";
+
+      chrome.tabs.query({ currentWindow: true, active: true }, (tabs) =>
+        chrome.tabs.sendMessage(tabs[0].id, {
+          name: "toggleBorder",
+          value: borderEnabled,
         })
       );
     });

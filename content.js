@@ -3,7 +3,7 @@ var highlightedElements = [];
 let styles = {
   color: "#ade6e6",
   borderSize: "0px",
-  borderColor: "black",
+  borderColor: "",
   borderStyle: "solid",
 };
 
@@ -20,10 +20,23 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       }
       break;
     case "requestStatus":
-      sendResponse({ name: "sendStatus", enabled, color: styles.color });
+      sendResponse({
+        name: "sendStatus",
+        enabled,
+        color: styles.color,
+        borderColor: styles.borderColor,
+      });
       break;
     case "toggleColor":
-      styles = { ...styles, color: request.value ? "#ade6e6" : "red" };
+      styles = { ...styles, color: request.value ? "#ade6e6" : "" };
+      break;
+    case "toggleBorder":
+      styles = {
+        ...styles,
+        borderColor: request.value ? "black" : "",
+        borderSize: request.value ? "2px" : "0px",
+      };
+      console.log({ styles });
       break;
   }
 });
