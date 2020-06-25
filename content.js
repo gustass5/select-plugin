@@ -51,9 +51,18 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
-document.addEventListener("selectionchange", () => {
+document.addEventListener("dblclick", () => {
   if (enabled) {
     getSelectionText();
+  }
+});
+
+document.addEventListener("selectionchange", () => {
+  if (highlightedElements.length !== 0) {
+    highlightedElements.forEach((element) => {
+      element.outerHTML = element.innerHTML;
+    });
+    highlightedElements = [];
   }
 });
 function getSelectionText() {
