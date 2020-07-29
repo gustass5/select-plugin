@@ -3,10 +3,14 @@ var highlightedElements = [];
 let styles = {
   currentColor: "#ade6e6",
   color: "#ade6e6",
-  borderSize: "0px",
-  borderColor: "",
+  borderSize: "2px",
+  borderColor: "black",
   borderStyle: "solid",
 };
+
+chrome.storage.sync.get(["styles"], (data) => {
+  styles = data.styles;
+});
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   switch (request.name) {
@@ -36,7 +40,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     case "toggleBorder":
       styles = {
         ...styles,
-        borderColor: request.value ? "black" : "",
         borderSize: request.value ? "2px" : "0px",
       };
       break;
@@ -48,7 +51,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       };
       console.log({ styles });
       break;
+    case "borderColorPicker":
+      styles = {
+        ...styles,
+        borderColor: request.value,
+      };
   }
+
+  chrome.storage.sync.set({ styles });
 });
 
 document.addEventListener("dblclick", () => {
@@ -151,7 +161,7 @@ function clearSelection() {
 
 function applyStyles(element) {
   element.style.backgroundColor = styles.currentColor;
-  element.style.border = styles.borderSize;
-  element.style.borderColor = styles.borderColor;
-  element.style.borderStyle = styles.borderStyle;
+  element.style.outlineWidth = styles.borderSize;
+  element.style.outlineColor = styles.borderColor;
+  element.style.outlineStyle = styles.borderStyle;
 }
