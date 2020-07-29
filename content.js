@@ -56,6 +56,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         ...styles,
         borderColor: request.value,
       };
+      break;
+    case "borderStyle":
+      styles = {
+        ...styles,
+        borderStyle: request.value,
+      };
+      break;
   }
 
   chrome.storage.sync.set({ styles });

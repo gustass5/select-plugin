@@ -85,6 +85,14 @@ document.addEventListener(
         })
       );
     });
+    borderStyle.addEventListener("change", (event) => {
+      chrome.tabs.query({ currentWindow: true, active: true }, (tabs) =>
+        chrome.tabs.sendMessage(tabs[0].id, {
+          name: "borderStyle",
+          value: event.target.value,
+        })
+      );
+    });
   },
   false
 );
