@@ -29,6 +29,7 @@ document.addEventListener(
           toggleBorder.value = borderEnabled ? "1" : "0";
           colorPicker.value = response.styles.color;
           borderColorPicker.value = response.styles.borderColor;
+          borderStyle.value = response.styles.borderStyle;
           disableButton.innerHTML = enabled ? "Disable" : "Enable";
         }
       )
