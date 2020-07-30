@@ -49,7 +49,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         currentColor: request.value,
         color: request.value,
       };
-      console.log({ styles });
       break;
     case "borderColorPicker":
       styles = {
