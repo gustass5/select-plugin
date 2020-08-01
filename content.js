@@ -1,5 +1,6 @@
 let enabled = true;
-var highlightedElements = [];
+let highlightedElements = [];
+let invalidChars = /\s/;
 let styles = {
   currentColor: "#ade6e6",
   color: "#ade6e6",
@@ -89,15 +90,18 @@ function getSelectionText() {
     text = document.selection.createRange().text;
   }
   if (text) {
-    // console.log({ text });
-    walk(document.body, new RegExp(text));
+    console.log({ text });
+    if (!invalidChars.test(text)) {
+      walk(document.body, new RegExp(text));
+      console.log("Happening");
+    }
   } else {
     highlightedElements.forEach((element) => {
       element.outerHTML = element.innerHTML;
     });
     highlightedElements = [];
   }
-  console.log("Elements: ", highlightedElements);
+  // console.log("Elements: ", highlightedElements);
 }
 
 function walk(node, targetRe) {
@@ -120,11 +124,11 @@ function handleText(node, targetRe) {
   // Does the text contain our target string?
   match = targetRe.exec(node.nodeValue);
   if (match) {
-    console.log("===========");
-    console.log({ match });
+    // console.log("===========");
+    // console.log({ match });
     // Split at the beginning of the match
     targetNode = node.splitText(match.index);
-    console.log("targetNode: ", targetNode.parentNode);
+    // console.log("targetNode: ", targetNode.parentNode);
     // console.log(targetNode);
     // Split at the end of the match.
     // match[0] is the full text that was matched.
