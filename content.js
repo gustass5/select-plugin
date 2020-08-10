@@ -1,5 +1,6 @@
 let enabled = true;
 let matchExact = false;
+let matchCase = false;
 let highlightedElements = [];
 let invalidChars = /\s/;
 let styles = {
@@ -29,11 +30,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     case "toggleMatchExact":
       matchExact = request.value;
       break;
+    case "toggleMatchCase":
+      matchCase = request.value;
+      break;
     case "requestStatus":
       sendResponse({
         name: "sendStatus",
         enabled,
         matchExact,
+        matchCase,
         styles,
       });
       break;
@@ -96,9 +101,11 @@ function getSelectionText() {
   }
   if (text) {
     if (!invalidChars.test(text)) {
+      const caseFlag = matchCase ? "" : "i";
+
       const regExp = matchExact
-        ? new RegExp(`\\b${text}\\b`)
-        : new RegExp(text);
+        ? new RegExp(`\\b${text}\\b`, caseFlag)
+        : new RegExp(text, caseFlag);
 
       walk(document.body, regExp);
     }
