@@ -1,18 +1,18 @@
 let disableButton,
-  matchCaseButton,
+  matchExactButton,
   toggleColor,
   toggleBorder,
   colorPicker,
   borderColorPicker,
   borderStyle;
 
-let enabled, matchExact, colorEnabled, borderEnabled;
+let enabled, matchExact, matchCase, colorEnabled, borderEnabled;
 
 document.addEventListener(
   "DOMContentLoaded",
   () => {
     disableButton = document.getElementById("disablePlugin");
-    matchCaseButton = document.getElementById("matchExact");
+    matchExactButton = document.getElementById("matchExact");
     toggleColor = document.getElementById("toggleColor");
     toggleBorder = document.getElementById("toggleBorder");
     colorPicker = document.getElementById("changeColor");
@@ -49,11 +49,11 @@ document.addEventListener(
       );
     });
 
-    matchCaseButton.addEventListener("click", () => {
+    matchExactButton.addEventListener("click", () => {
       matchExact = !matchExact;
       chrome.tabs.query({ currentWindow: true, active: true }, (tabs) =>
         chrome.tabs.sendMessage(tabs[0].id, {
-          name: "toggleMatchCase",
+          name: "toggleMatchExact",
           value: matchExact,
         })
       );
