@@ -133,7 +133,7 @@ function handleText(node, targetRe) {
     // Split at the end of the match.
     // match[0] is the full text that was matched.
     followingNode = targetNode.splitText(match[0].length);
-    if (!targetNode.parentNode.classList.contains("$test")) {
+    if (!targetNode.parentNode.classList.contains("$select-matched")) {
       // console.log("followingNode: ", followingNode);
       // Wrap the target in an `span` element with an `arabic` class.
       // First we create the wrapper and insert it in front
@@ -141,7 +141,7 @@ function handleText(node, targetRe) {
       // as the `href`.
       wrapper = document.createElement("span");
       applyStyles(wrapper);
-      wrapper.classList.add("$test");
+      wrapper.classList.add("$select-matched");
       targetNode.parentNode.insertBefore(wrapper, targetNode);
       // Now we move the target text inside it
       wrapper.appendChild(targetNode);
