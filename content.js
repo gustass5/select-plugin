@@ -1,4 +1,5 @@
 let enabled = true;
+let matchExact = false;
 let highlightedElements = [];
 let invalidChars = /\s/;
 let styles = {
@@ -25,10 +26,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         highlightedElements = [];
       }
       break;
+    case "toggleMatchExact":
+      matchExact = request.value;
+      break;
     case "requestStatus":
       sendResponse({
         name: "sendStatus",
         enabled,
+        matchExact,
         styles,
       });
       break;
@@ -90,10 +95,12 @@ function getSelectionText() {
     text = document.selection.createRange().text;
   }
   if (text) {
-    console.log({ text });
     if (!invalidChars.test(text)) {
-      walk(document.body, new RegExp(text));
-      console.log("Happening");
+      const regExp = matchExact
+        ? new RegExp(`\\b${text}\\b`)
+        : new RegExp(text);
+
+      walk(document.body, regExp);
     }
   } else {
     highlightedElements.forEach((element) => {
