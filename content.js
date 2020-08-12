@@ -11,9 +11,15 @@ let styles = {
   borderStyle: "solid",
 };
 
-chrome.storage.sync.get(["styles"], (data) => {
-  styles = data.styles;
-});
+chrome.storage.sync.get(
+  ["styles", "enabled", "matchExact", "matchCase"],
+  (data) => {
+    styles = data.styles;
+    enabled = data.enabled;
+    matchExact = data.matchExact;
+    matchCase = data.matchCase;
+  }
+);
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   switch (request.name) {
@@ -75,7 +81,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       break;
   }
 
-  chrome.storage.sync.set({ styles });
+  chrome.storage.sync.set({ styles, enabled, matchExact, matchCase });
 });
 
 document.addEventListener("dblclick", () => {
