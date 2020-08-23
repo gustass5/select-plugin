@@ -1,32 +1,37 @@
 <!DOCTYPE html>
 <html>
-  <head></head>
-  <body>
-    <button id="disablePlugin" style="cursor: pointer;">Disable</button>
-    <button id="matchExact" style="cursor: pointer;">Match exact word</button>
-    <button id="matchCase" style="cursor: pointer;">Match case</button>
-    <input
-      id="toggleColor"
-      style="width: 35px; cursor: pointer;"
-      type="range"
-      max="1"
-      min="0"
-    />
-    <input id="changeColor" type="color" />
-    <input
-      id="toggleBorder"
-      style="width: 35px; cursor: pointer;"
-      type="range"
-      max="1"
-      min="0"
-    />
+  <head>
+    <link rel="stylesheet" href="./css/main.css" />
+  </head>
+  <body class="wrapper">
+    <header>
+      sELECT
+    </header>
+    <button id="disablePlugin" class="button">
+      Disable
+    </button>
+    <div class="matchingOptions">
+      <button id="matchExact" class="button">
+        Match exact word
+      </button>
+      <button id="matchCase" class="button">
+        Match case
+      </button>
+    </div>
+    <div class="toggleButtons">
+      <button id="toggleColor" class="button">Toggle color</button>
+      <input id="changeColor" class="picker" type="color" />
+    </div>
+    <div class="toggleButtons">
+      <button id="toggleBorder" class="button">Toggle border</button>
+      <input id="changeBorderColor" class="picker" type="color" />
+    </div>
     <select id="changeBorderType">
       <option value="solid">Solid</option>
       <option value="dotted">Dotted</option>
       <option value="double">Double</option>
       <option value="dashed">Dashed</option>
     </select>
-    <input id="changeBorderColor" type="color" />
     <script src="./popup.js"></script>
   </body>
 </html>
