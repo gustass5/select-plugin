@@ -27,10 +27,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       enabled = request.value;
       if (!enabled) {
         clearSelection();
-        highlightedElements.forEach((element) => {
-          element.outerHTML = element.innerHTML;
-        });
-        highlightedElements = [];
+        clearHighlightedElements();
       }
       break;
     case "toggleMatchExact":
@@ -92,10 +89,7 @@ document.addEventListener("dblclick", () => {
 
 document.addEventListener("selectionchange", () => {
   if (highlightedElements.length !== 0) {
-    highlightedElements.forEach((element) => {
-      element.outerHTML = element.innerHTML;
-    });
-    highlightedElements = [];
+    clearHighlightedElements();
   }
 });
 function getSelectionText() {
@@ -116,10 +110,7 @@ function getSelectionText() {
       walk(document.body, regExp);
     }
   } else {
-    highlightedElements.forEach((element) => {
-      element.outerHTML = element.innerHTML;
-    });
-    highlightedElements = [];
+    clearHighlightedElements();
   }
   // console.log("Elements: ", highlightedElements);
 }
@@ -189,6 +180,12 @@ function clearSelection() {
   }
 }
 
+function clearHighlightedElements() {
+  highlightedElements.forEach((element) => {
+    element.outerHTML = element.innerHTML;
+  });
+  highlightedElements = [];
+}
 function applyStyles(element) {
   element.style.backgroundColor = styles.currentColor;
   element.style.outlineWidth = styles.borderSize;
