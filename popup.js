@@ -7,8 +7,33 @@ let disableButton,
   borderColorPicker,
   borderStyle;
 
-let enabled, matchExact, matchCase, colorEnabled, borderEnabled;
+let enabled = true,
+  matchExact,
+  matchCase,
+  colorEnabled,
+  borderEnabled;
 
+const setButtons = () => {
+  setButtonToggle(disableButton, enabled);
+  setButtonToggle(matchExactButton, enabled && matchExact);
+  setButtonToggle(matchCaseButton, enabled && matchCase);
+  setButtonToggle(toggleColor, enabled && colorEnabled);
+  setButtonToggle(toggleBorder, enabled && borderEnabled);
+};
+
+const setButtonToggle = (element, condition) => {
+  if (condition) {
+    toggleButton(element);
+  }
+};
+
+const toggleButton = (element) => {
+  if (element.classList.contains("toggled")) {
+    element.classList.remove("toggled");
+  } else {
+    element.classList.add("toggled");
+  }
+};
 document.addEventListener(
   "DOMContentLoaded",
   () => {
@@ -20,12 +45,14 @@ document.addEventListener(
     colorPicker = document.getElementById("changeColor");
     borderColorPicker = document.getElementById("changeBorderColor");
     borderStyle = document.getElementById("changeBorderType");
-
     chrome.tabs.query({ currentWindow: true, active: true }, (tabs) =>
       chrome.tabs.sendMessage(
         tabs[0].id,
         { name: "requestStatus" },
         (response) => {
+          if (response === undefined) {
+            return;
+          }
           enabled = response.enabled;
           matchExact = response.matchExact;
           matchCase = response.matchCase;
@@ -37,6 +64,7 @@ document.addEventListener(
           borderColorPicker.value = response.styles.borderColor;
           borderStyle.value = response.styles.borderStyle;
           disableButton.innerHTML = enabled ? "Disable" : "Enable";
+          setButtons();
         }
       )
     );
@@ -44,6 +72,7 @@ document.addEventListener(
     disableButton.addEventListener("click", () => {
       enabled = !enabled;
       disableButton.innerHTML = enabled ? "Disable" : "Enable";
+      toggleButton(disableButton);
       chrome.tabs.query({ currentWindow: true, active: true }, (tabs) =>
         chrome.tabs.sendMessage(tabs[0].id, {
           name: "togglePlugin",
@@ -54,6 +83,7 @@ document.addEventListener(
 
     matchExactButton.addEventListener("click", () => {
       matchExact = !matchExact;
+      toggleButton(matchExactButton);
       chrome.tabs.query({ currentWindow: true, active: true }, (tabs) =>
         chrome.tabs.sendMessage(tabs[0].id, {
           name: "toggleMatchExact",
@@ -64,6 +94,7 @@ document.addEventListener(
 
     matchCaseButton.addEventListener("click", () => {
       matchCase = !matchCase;
+      toggleButton(matchCaseButton);
       chrome.tabs.query({ currentWindow: true, active: true }, (tabs) =>
         chrome.tabs.sendMessage(tabs[0].id, {
           name: "toggleMatchCase",
@@ -73,9 +104,8 @@ document.addEventListener(
     });
 
     toggleColor.addEventListener("click", (event) => {
-      event.target.value = event.target.value === "1" ? "0" : "1";
-      colorEnabled = event.target.value === "1";
-
+      colorEnabled = !colorEnabled;
+      toggleButton(toggleColor);
       chrome.tabs.query({ currentWindow: true, active: true }, (tabs) =>
         chrome.tabs.sendMessage(tabs[0].id, {
           name: "toggleColor",
@@ -85,9 +115,8 @@ document.addEventListener(
     });
 
     toggleBorder.addEventListener("click", (event) => {
-      event.target.value = event.target.value === "1" ? "0" : "1";
-      borderEnabled = event.target.value === "1";
-
+      borderEnabled = !borderEnabled;
+      toggleButton(toggleBorder);
       chrome.tabs.query({ currentWindow: true, active: true }, (tabs) =>
         chrome.tabs.sendMessage(tabs[0].id, {
           name: "toggleBorder",
@@ -104,6 +133,7 @@ document.addEventListener(
         })
       );
     });
+
     borderColorPicker.addEventListener("change", (event) => {
       chrome.tabs.query({ currentWindow: true, active: true }, (tabs) =>
         chrome.tabs.sendMessage(tabs[0].id, {
@@ -112,6 +142,7 @@ document.addEventListener(
         })
       );
     });
+
     borderStyle.addEventListener("change", (event) => {
       chrome.tabs.query({ currentWindow: true, active: true }, (tabs) =>
         chrome.tabs.sendMessage(tabs[0].id, {
