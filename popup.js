@@ -13,27 +13,28 @@ let enabled = true,
   colorEnabled,
   borderEnabled;
 
-const setButtons = () => {
+function setButtons() {
   setButtonToggle(disableButton, enabled);
   setButtonToggle(matchExactButton, enabled && matchExact);
   setButtonToggle(matchCaseButton, enabled && matchCase);
   setButtonToggle(toggleColor, enabled && colorEnabled);
   setButtonToggle(toggleBorder, enabled && borderEnabled);
-};
+}
 
-const setButtonToggle = (element, condition) => {
+function setButtonToggle(element, condition) {
   if (condition) {
     toggleButton(element);
   }
-};
+}
 
-const toggleButton = (element) => {
+function toggleButton(element) {
   if (element.classList.contains("toggled")) {
     element.classList.remove("toggled");
   } else {
     element.classList.add("toggled");
   }
-};
+}
+
 document.addEventListener(
   "DOMContentLoaded",
   () => {
