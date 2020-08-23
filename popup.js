@@ -59,8 +59,7 @@ document.addEventListener(
           matchCase = response.matchCase;
           colorEnabled = response.styles.currentColor !== "";
           borderEnabled = response.styles.borderSize !== "0px";
-          toggleColor.value = colorEnabled ? "1" : "0";
-          toggleBorder.value = borderEnabled ? "1" : "0";
+
           colorPicker.value = response.styles.color;
           borderColorPicker.value = response.styles.borderColor;
           borderStyle.value = response.styles.borderStyle;
